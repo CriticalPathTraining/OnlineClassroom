@@ -1,9 +1,9 @@
 Clear-Host 
 
-$firstname = "John"
-$lastName = "Smith"
+$firstname = "Eric"
+$lastName = "Clapton"
 
-$classroomDomainName = "CptClassroom1234"
+$classroomDomainName = "CptCR"
 $globalAdminAccountName = "Instructor"
 $globalAdminPassword = "pass@word1"
 
@@ -16,10 +16,16 @@ $globalAdminSecurePassword = ConvertTo-SecureString -String $globalAdminPassword
 
 function Create-Student-Sites($firstName, $lastName){
 
-    $studentUPN = $firstName + "." + $lastName + "@" + $classroomDomain    
+    $firstNameClean = $firstName -replace " ", ""
+    $firstNameClean = $firstNameClean -replace "'", ""
+ 
+    $lastNameClean = $lastName -replace " ", ""
+    $lastNameClean = $lastNameClean -replace "'", ""
+
+    $studentUPN = $firstNameClean + "." + $lastNameClean + "@" + $classroomDomain    
     $instructorUPN  = $globalAdminAccount
      
-    $studentTeamSiteUrl =  $classroomSharePointRootSite + "/sites/TeamSite_"+$firstName+$lastName  
+    $studentTeamSiteUrl =  $classroomSharePointRootSite + "/sites/TeamSite_"+$firstNameClean+$lastNameClean
     Write-Host "Creating team site at $studentTeamSiteUrl"
     $silent = New-SPOSite -Url $studentTeamSiteUrl -Owner $instructorUPN -StorageQuota 1000 -Title "Team Site" -Template "STS#0" 
     Write-Host " - site created"
@@ -30,10 +36,13 @@ function Create-Student-Sites($firstName, $lastName){
 	$ownerGroupTitle = $ownerGroup.title
 	$silent = Add-SPOUser -Site $studentTeamSiteUrl -LoginName $studentUPN -Group $ownerGroupTitle
 	$silent = Set-SPOUser -Site $studentTeamSiteUrl -LoginName $studentUPN -IsSiteCollectionAdmin $true		
+	$silent = Add-SPOUser -Site $studentTeamSiteUrl -LoginName $instructorUPN -Group $ownerGroupTitle
+	$silent = Set-SPOUser -Site $studentTeamSiteUrl -LoginName $instructorUPN -IsSiteCollectionAdmin $true		
+
     Write-Host " - done"
     Write-Host ""
 
-    $studentSearchSiteUrl =  $classroomSharePointRootSite + "/sites/SearchCenter_"+$firstName+$lastName   
+    $studentSearchSiteUrl =  $classroomSharePointRootSite + "/sites/SearchCenter_"+$firstNameClean+$lastNameClean
     Write-Host "Creating search center site at $studentSearchSiteUrl"    
     $silent = New-SPOSite -Url $studentSearchSiteUrl -Owner $instructorUPN -StorageQuota 1000 -Title "Search" -Template "SRCHCEN#0" 
     Write-Host " - site created"
@@ -44,6 +53,8 @@ function Create-Student-Sites($firstName, $lastName){
 	$ownerGroupTitle = $ownerGroup.title
 	$silent = Add-SPOUser -Site $studentSearchSiteUrl -LoginName $studentUPN -Group $ownerGroupTitle
 	$silent = Set-SPOUser -Site $studentSearchSiteUrl -LoginName $studentUPN -IsSiteCollectionAdmin $true		
+	$silent = Add-SPOUser -Site $studentSearchSiteUrl -LoginName $instructorUPN -Group $ownerGroupTitle
+	$silent = Set-SPOUser -Site $studentSearchSiteUrl -LoginName $instructorUPN -IsSiteCollectionAdmin $true		
     Write-Host " - done"
     Write-Host ""
 

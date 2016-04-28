@@ -1,6 +1,6 @@
 Clear-Host 
 
-$classroomDomainName = "CptClassroom1234"
+$classroomDomainName = "CptCR"
 $globalAdminAccountName = "Instructor"
 $globalAdminPassword = "pass@word1"
 
@@ -17,12 +17,20 @@ $e5LcenseSku = $classroomDomainName + ":ENTERPRISEPREMIUM"
 
 function New-Student($firstName, $lastName, $alternateEmail) {
 
- $userPrincipalName = $firstName + "." + $lastName + "@" + $classroomDomain
+ $firstNameClean = $firstName -replace " ", ""
+ $firstNameClean = $firstNameClean -replace "'", ""
+ 
+ $lastNameClean = $lastName -replace " ", ""
+ $lastNameClean = $lastNameClean -replace "'", ""
+
+ $userPrincipalName = $firstNameClean + "." + $lastNameClean + "@" + $classroomDomain
  $userDisplayName = $firstName + " " + $lastName
  $password = "pass@word1"
 
  # Create new user account for student 
- New-MsolUser -UserPrincipalName $userPrincipalName `
+ New-MsolUser -FirstName $firstName `
+              -LastName $lastName `
+              -UserPrincipalName $userPrincipalName `
               -DisplayName $userDisplayName `
               -UsageLocation "US" `
               -UserType Member `
@@ -51,7 +59,6 @@ $credential = New-Object -TypeName System.Management.Automation.PSCredential `
                          -ArgumentList $globalAdminAccount, $globalAdminSecurePassword
 
 Connect-MsolService -Credential $credential
-Connect-SPOService -Url $classroomSharePointTenantSite -credential $credential
 
 $StudentsFilePath = ("{0}\Students.csv" -f $CurrentDirectory.Path)
 $Students = Import-csv -path $StudentsFilePath

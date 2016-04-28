@@ -1,10 +1,10 @@
 Clear-Host 
 
-$firstName = "Jack"
-$lastName = "Daniels"
+$firstName = "Bobby Ray"
+$lastName = "Sirus"
 $alternateEmail = "jd@gmail.com"
 
-$classroomDomainName = "CptClassroom1234"
+$classroomDomainName = "CptCR"
 $globalAdminAccountName = "Instructor"
 $globalAdminPassword = "pass@word1"
 
@@ -18,12 +18,21 @@ $e5LcenseSku = $classroomDomainName + ":ENTERPRISEPREMIUM"
 
 function New-Student($firstName, $lastName, $alternateEmail) {
 
- $userPrincipalName = $firstName + "." + $lastName + "@" + $classroomDomain
  $userDisplayName = $firstName + " " + $lastName
+ 
+ $firstNameClean = $firstName -replace " ", ""
+ $firstNameClean = $firstNameClean -replace "'", ""
+ 
+ $lastNameClean = $lastName -replace " ", ""
+ $lastNameClean = $lastNameClean -replace "'", ""
+
+ $userPrincipalName = $firstNameClean + "." + $lastNameClean + "@" + $classroomDomain
  $password = "pass@word1"
 
  # Create new user account for student 
- New-MsolUser -UserPrincipalName $userPrincipalName `
+ New-MsolUser -FirstName $firstName `
+              -LastName $lastName `
+              -UserPrincipalName $userPrincipalName `
               -DisplayName $userDisplayName `
               -UsageLocation "US" `
               -UserType Member `
