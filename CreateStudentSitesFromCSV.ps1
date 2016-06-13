@@ -1,6 +1,7 @@
 Clear-Host 
 
-$classroomDomainName = "CptCR"
+
+$classroomDomainName = "CptLiberty1"
 $globalAdminAccountName = "Instructor"
 $globalAdminPassword = "pass@word1"
 
@@ -76,7 +77,7 @@ $credential = New-Object -TypeName System.Management.Automation.PSCredential `
 Connect-SPOService -Url $classroomSharePointTenantSite -credential $credential
 
 
-$StudentsFilePath = ("{0}\Students.csv" -f $CurrentDirectory.Path)
+$StudentsFilePath = ("{0}\LibertyStudents.csv" -f $CurrentDirectory.Path)
 $Students = Import-csv -path $StudentsFilePath
 
 foreach($Student in $Students) { 
