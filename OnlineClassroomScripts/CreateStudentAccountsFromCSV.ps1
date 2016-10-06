@@ -1,6 +1,7 @@
 Clear-Host 
 
-$classroomDomainName = "CptLiberty1"
+# update the next three lines with values from your Office 365 tenant
+$classroomDomainName = "CptClassroom0812"
 $globalAdminAccountName = "Instructor"
 $globalAdminPassword = "pass@word1"
 
@@ -9,7 +10,6 @@ $classroomSharePointRootSite = "https://" + $classroomDomainName + ".sharepoint.
 $classroomSharePointTenantSite = "https://" + $classroomDomainName + "-admin.sharepoint.com"
 
 $globalAdminAccount = $globalAdminAccountName + "@" + $classroomDomain 
-$globalAdminPassword = "pass@word1"
 $globalAdminSecurePassword = ConvertTo-SecureString -String $globalAdminPassword -AsPlainText -Force
 
 $e5LcenseSku = $classroomDomainName + ":ENTERPRISEPREMIUM"
@@ -60,7 +60,7 @@ $credential = New-Object -TypeName System.Management.Automation.PSCredential `
 
 Connect-MsolService -Credential $credential
 
-$StudentsFilePath = ("{0}\LibertyStudents.csv" -f $CurrentDirectory.Path)
+$StudentsFilePath = ("{0}\Students.csv" -f $CurrentDirectory.Path)
 $Students = Import-csv -path $StudentsFilePath
 
 foreach($Student in $Students) { 

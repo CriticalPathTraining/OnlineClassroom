@@ -1,7 +1,6 @@
-Clear-Host 
+Clear-Host
 
-
-$classroomDomainName = "CptLiberty1"
+$classroomDomainName = "CptClassroom0812"
 $globalAdminAccountName = "Instructor"
 $globalAdminPassword = "pass@word1"
 
@@ -10,7 +9,6 @@ $classroomSharePointRootSite = "https://" + $classroomDomainName + ".sharepoint.
 $classroomSharePointTenantSite = "https://" + $classroomDomainName + "-admin.sharepoint.com"
 
 $globalAdminAccount = $globalAdminAccountName + "@" + $classroomDomain 
-$globalAdminPassword = "pass@word1"
 $globalAdminSecurePassword = ConvertTo-SecureString -String $globalAdminPassword -AsPlainText -Force
 
 $instructorUPN = $globalAdminAccount 
@@ -21,18 +19,13 @@ function Configure-Site-Permissions($siteCollectionUrl){
         Write-Host " - configuring instructor permissions for $siteCollectionUrl"
         $ownerGroup = Get-SPOSiteGroup -site $siteCollectionUrl | where {$_.title -like "*Owners"}
 	    $ownerGroupTitle = $ownerGroup.title
-	    $silent = Add-SPOUser -Site $siteCollectionUrl -LoginName $instructorUPN -Group $ownerGroupTitle
+	    $silent = Add-SPOUser -Site $siteCollectionUrl -LoginName $instructorUPN -Group $ownerGroupTitle -ErrorAction Ignore
 	    $silent = Set-SPOUser -Site $siteCollectionUrl -LoginName $instructorUPN -IsSiteCollectionAdmin $true		
         Write-Host " - done"
         Write-Host ""
-
     }
-
-    
-    
 }
 
-# create new log file 
 
 $credential = New-Object -TypeName System.Management.Automation.PSCredential `
                          -ArgumentList $globalAdminAccount, $globalAdminSecurePassword

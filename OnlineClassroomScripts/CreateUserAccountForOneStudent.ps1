@@ -1,17 +1,16 @@
 Clear-Host 
 
-$firstName = "Bobby Ray"
-$lastName = "Sirus"
-$alternateEmail = "jd@gmail.com"
+$firstName = "Bob"
+$lastName = "White"
+$alternateEmail = "bw@gmail.com"
 
-$classroomDomainName = "CptCR"
+$classroomDomainName = "CptClassroom0812"
 $globalAdminAccountName = "Instructor"
 $globalAdminPassword = "pass@word1"
 
 $classroomDomain = $classroomDomainName + ".onMicrosoft.com"
 
 $globalAdminAccount = $globalAdminAccountName + "@" + $classroomDomain 
-$globalAdminPassword = "pass@word1"
 $globalAdminSecurePassword = ConvertTo-SecureString -String $globalAdminPassword -AsPlainText -Force
 
 $e5LcenseSku = $classroomDomainName + ":ENTERPRISEPREMIUM"

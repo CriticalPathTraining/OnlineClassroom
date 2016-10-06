@@ -1,9 +1,9 @@
 Clear-Host 
 
-$firstname = "Eric"
-$lastName = "Clapton"
+$firstname = "Bob"
+$lastName = "White"
 
-$classroomDomainName = "CptCR"
+$classroomDomainName = "CptClassroom0812"
 $globalAdminAccountName = "Instructor"
 $globalAdminPassword = "pass@word1"
 

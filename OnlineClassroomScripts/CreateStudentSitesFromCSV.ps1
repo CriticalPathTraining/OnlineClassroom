@@ -1,7 +1,7 @@
 Clear-Host 
 
-
-$classroomDomainName = "CptLiberty1"
+# update the next three lines with values from your Office 365 tenant
+$classroomDomainName = "CptClassroom0812"
 $globalAdminAccountName = "Instructor"
 $globalAdminPassword = "pass@word1"
 
@@ -10,7 +10,6 @@ $classroomSharePointRootSite = "https://" + $classroomDomainName + ".sharepoint.
 $classroomSharePointTenantSite = "https://" + $classroomDomainName + "-admin.sharepoint.com"
 
 $globalAdminAccount = $globalAdminAccountName + "@" + $classroomDomain 
-$globalAdminPassword = "pass@word1"
 $globalAdminSecurePassword = ConvertTo-SecureString -String $globalAdminPassword -AsPlainText -Force
 
 function Create-Student-Sites($firstName, $lastName){
@@ -21,37 +20,17 @@ function Create-Student-Sites($firstName, $lastName){
     $lastNameClean = $lastName -replace " ", ""
     $lastNameClean = $lastNameClean -replace "'", ""
 
-
     $studentUPN = $firstNameClean + "." + $lastNameClean + "@" + $classroomDomain    
-    $instructorUPN  = $globalAdminAccount
      
     $studentTeamSiteUrl =  $classroomSharePointRootSite + "/sites/TeamSite_"+$firstNameClean+$lastNameClean
     Write-Host "Creating team site at $studentTeamSiteUrl"
-    $silent = New-SPOSite -Url $studentTeamSiteUrl -Owner $instructorUPN -StorageQuota 1000 -Title "Team Site" -Template "STS#0" 
+    $silent = New-SPOSite -Url $studentTeamSiteUrl -Owner $studentUPN -StorageQuota 1000 -Title "Team Site" -Template "STS#0" -NoWait
     Write-Host " - site created"
-
-    Write-Host " - configuring permissions for student to access site as site owner"
-    $site = Get-SPOSite $studentTeamSiteUrl
-    $ownerGroup = Get-SPOSiteGroup -site $studentTeamSiteUrl | where {$_.title -like "*Owners"}
-	$ownerGroupTitle = $ownerGroup.title
-	$silent = Add-SPOUser -Site $studentTeamSiteUrl -LoginName $studentUPN -Group $ownerGroupTitle
-	$silent = Set-SPOUser -Site $studentTeamSiteUrl -LoginName $studentUPN -IsSiteCollectionAdmin $true		
-    Write-Host " - done"
-    Write-Host ""
 
     $studentSearchSiteUrl =  $classroomSharePointRootSite + "/sites/SearchCenter_"+$firstNameClean+$lastNameClean
     Write-Host "Creating search center site at $studentSearchSiteUrl"    
-    $silent = New-SPOSite -Url $studentSearchSiteUrl -Owner $instructorUPN -StorageQuota 1000 -Title "Search" -Template "SRCHCEN#0" 
+    $silent = New-SPOSite -Url $studentSearchSiteUrl -Owner $studentUPN -StorageQuota 1000 -Title "Search" -Template "SRCHCEN#0" -NoWait
     Write-Host " - site created"
-
-    Write-Host " - configuring permissions for student to access site as site owner"
-    $site = Get-SPOSite $studentSearchSiteUrl
-    $ownerGroup = Get-SPOSiteGroup -site $studentSearchSiteUrl | where {$_.title -like "*Owners"}
-	$ownerGroupTitle = $ownerGroup.title
-	$silent = Add-SPOUser -Site $studentSearchSiteUrl -LoginName $studentUPN -Group $ownerGroupTitle
-	$silent = Set-SPOUser -Site $studentSearchSiteUrl -LoginName $studentUPN -IsSiteCollectionAdmin $true		
-    Write-Host " - done"
-    Write-Host ""
 
      # write user info for student to log file
     "Student: $firstName + "." + $lastName" | Out-File $LogFilePath -Append
@@ -77,7 +56,7 @@ $credential = New-Object -TypeName System.Management.Automation.PSCredential `
 Connect-SPOService -Url $classroomSharePointTenantSite -credential $credential
 
 
-$StudentsFilePath = ("{0}\LibertyStudents.csv" -f $CurrentDirectory.Path)
+$StudentsFilePath = ("{0}\Students.csv" -f $CurrentDirectory.Path)
 $Students = Import-csv -path $StudentsFilePath
 
 foreach($Student in $Students) { 
